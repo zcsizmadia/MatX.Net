@@ -13,13 +13,13 @@ using cf32_t = cuda::std::complex<float>;
 using cd64_t = cuda::std::complex<double>;
 
 // ── Memory space conversion ──────────────────────────────────────────────────
-inline matxMemorySpace_t to_matx_mem(MatxMemorySpace s) noexcept {
+inline matx::matxMemorySpace_t to_matx_mem(MatxMemorySpace s) noexcept {
     switch (s) {
-        case MATX_MEMORY_MANAGED:     return MATX_MANAGED_MEMORY;
-        case MATX_MEMORY_DEVICE:      return MATX_DEVICE_MEMORY;
-        case MATX_MEMORY_HOST:        return MATX_HOST_MEMORY;
-        case MATX_MEMORY_HOST_MALLOC: return MATX_HOST_MALLOC_MEMORY;
-        default:                      return MATX_MANAGED_MEMORY;
+        case MATX_MEMORY_MANAGED:     return matx::MATX_MANAGED_MEMORY;
+        case MATX_MEMORY_DEVICE:      return matx::MATX_DEVICE_MEMORY;
+        case MATX_MEMORY_HOST:        return matx::MATX_HOST_MEMORY;
+        case MATX_MEMORY_HOST_MALLOC: return matx::MATX_HOST_MALLOC_MEMORY;
+        default:                      return matx::MATX_MANAGED_MEMORY;
     }
 }
 

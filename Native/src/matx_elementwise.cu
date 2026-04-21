@@ -17,21 +17,14 @@ static __MATX_INLINE__ __MATX_HOST__ __MATX_DEVICE__ auto scalar_internal_erfc(T
     if constexpr (cuda::std::is_floating_point_v<T>) { return cuda::std::erfc(v1); }
     else { return v1; }
 }
-template <typename T>
-static __MATX_INLINE__ __MATX_HOST__ __MATX_DEVICE__ auto scalar_internal_sign(T v1) {
-    return (v1 > T(0)) ? T(1) : ((v1 < T(0)) ? T(-1) : T(0));
-}
-
 MATX_UNARY_OP_GEN_NOFUNC(erf,  Erf)
 MATX_UNARY_OP_GEN_NOFUNC(erfc, Erfc)
-MATX_UNARY_OP_GEN_NOFUNC(sign, Sign)
 
 } } // namespace matx::detail
 
 namespace matx {
     MATX_DEFINE_UNARY_OP(erf,  detail::ErfOp)
     MATX_DEFINE_UNARY_OP(erfc, detail::ErfcOp)
-    MATX_DEFINE_UNARY_OP(sign, detail::SignOp)
 } // namespace matx
 
 // ── Unary helper macro ────────────────────────────────────────────────────────
