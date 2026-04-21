@@ -26,9 +26,20 @@ jobs:
     - name: Verify CUDA Installation
       run: nvcc --version # Verify installation
 
-    - name: Build native library
+    - name: Checkout MatX
+      uses: actions/checkout@v6
+      with:
+        repository: NVIDIA/matx
+        path: Native/MatX
+
+    - name: Build MatX
       shell: bash
-      run: true
+      run: |
+        cd Native/MatX
+        mkdir -p build
+        cd build
+        cmake .. -DCMAKE_BUILD_TYPE=Release
+        cmake --build . --config Release
 
     - name: Build
       shell: bash
