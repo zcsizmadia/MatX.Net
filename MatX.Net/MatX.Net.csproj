@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>$(DefaultTargetFramework)</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RootNamespace>MatX.Net</RootNamespace>
+    <AssemblyName>MatX.Net</AssemblyName>
+    <Optimize>true</Optimize>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- Embed native lib next to assembly on publish -->
+    <PublishSingleFile>false</PublishSingleFile>
+  </PropertyGroup>
+
+  <!-- Runtime-specific native lib copy targets.
+       Place the built matxnative.so / matxnative.dll next to the project
+       or set MATX_NATIVE_LIB env var at runtime. -->
+  <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+    <None Include="runtimes\win-x64\native\matxnative.dll"
+          CopyToOutputDirectory="PreserveNewest" Condition="Exists('runtimes\win-x64\native\matxnative.dll')" />
+  </ItemGroup>
+  <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+    <None Include="runtimes\linux-x64\native\libmatxnative.so"
+          CopyToOutputDirectory="PreserveNewest" Condition="Exists('runtimes\linux-x64\native\libmatxnative.so')" />
+  </ItemGroup>
+  <ItemGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+    <None Include="runtimes\osx-x64\native\libmatxnative.dylib"
+          CopyToOutputDirectory="PreserveNewest" Condition="Exists('runtimes\osx-x64\native\libmatxnative.dylib')" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,37 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+
+    - name: Setup .NET SDKs
+      uses: actions/setup-dotnet@v5
+      with:
+        dotnet-version: |
+          10.0.x
+
+    - uses: jimver/cuda-toolkit@v0.2.21
+      with:
+        cuda: '12.1.0' # Specify the desired version
+    
+    - name: Verify CUDA Installation
+      run: nvcc --version # Verify installation
+
+    - name: Build native library
+      shell: bash
+      run: true
+
+    - name: Build
+      shell: bash
+      run: |
+        dotnet restore
+        dotnet build -c Release --no-restore

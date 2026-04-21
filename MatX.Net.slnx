@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="MatX.Net.Tests/MatX.Net.Tests.csproj" />
+  <Project Path="MatX.Net/MatX.Net.csproj" />
+  <Project Path="Sample/Samples.csproj" />
+</Solution>
