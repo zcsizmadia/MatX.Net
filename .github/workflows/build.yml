@@ -8,8 +8,25 @@ on:
 
 jobs:
   build:
-    name: Build
-    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix: &platform-matrix
+        runtimeId: [win-x64, win-arm64, linux-x64, linux-arm64]
+        include:
+          - runtimeId: win-x64
+            os: windows-latest
+
+          - runtimeId: win-arm64
+            os: windows-11-arm
+
+          - runtimeId: linux-x64
+            os: ubuntu-latest
+
+          - runtimeId: linux-arm64
+            os: ubuntu-24.04-arm
+
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v6
 
@@ -36,12 +53,11 @@ jobs:
     - name: Build MatX
       shell: bash
       run: |
-        cd Native/MatX
-        mkdir -p build
-        cd build
-        cmake .. -DCMAKE_BUILD_TYPE=Release
-        cmake --build . --config Release
-        find .
+        cd Native
+        mkdir build
+        cmake -B build -DCMAKE_BUILD_TYPE=Release
+        cmake --build build --config Release -j$(nproc)
+        find build/
 
     - name: Build
       shell: bash
