@@ -35,7 +35,7 @@ jobs:
 
     - uses: jimver/cuda-toolkit@v0.2.35
       with:
-        method: 'network'
+        method: 'local'
         cuda: '12.6.2'
     
     - name: Verify CUDA Installation
