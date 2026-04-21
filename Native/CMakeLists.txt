@@ -40,7 +40,7 @@ find_package(CUDAToolkit REQUIRED)
 # Assume the CMakeLists.txt of the parent MatX repo is one directory up.
 # Adjust MATX_ROOT if building standalone.
 if(NOT DEFINED MATX_ROOT)
-    get_filename_component(MATX_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/matx" ABSOLUTE)
+    get_filename_component(MATX_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/MatX" ABSOLUTE)
 endif()
 
 # If matx was installed via find_package:

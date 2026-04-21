@@ -12,13 +12,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix: &platform-matrix
-        runtimeId: [win-x64, win-arm64, linux-x64, linux-arm64]
+        runtimeId: [win-x64, linux-x64, linux-arm64]
         include:
           - runtimeId: win-x64
             os: windows-latest
-
-          - runtimeId: win-arm64
-            os: windows-11-arm
 
           - runtimeId: linux-x64
             os: ubuntu-latest
