@@ -217,11 +217,11 @@ extern "C" MatxTensorHandle matx_tensor_slice(
             matx::index_t s[R], e[R], st[R];
             for (int i = 0; i < R; ++i) {
                 // C# passes INT64_MIN for matxKeepDim and INT64_MAX for matxEnd
-                s[i]  = (starts[i]  == INT64_MIN) ? matxKeepDim
-                       :(starts[i]  == INT64_MAX) ? matxEnd
+                s[i]  = (starts[i]  == INT64_MIN) ? matx::matxKeepDim
+                       :(starts[i]  == INT64_MAX) ? matx::matxEnd
                        : static_cast<matx::index_t>(starts[i]);
-                e[i]  = (ends[i]    == INT64_MIN) ? matxKeepDim
-                       :(ends[i]    == INT64_MAX) ? matxEnd
+                e[i]  = (ends[i]    == INT64_MIN) ? matx::matxKeepDim
+                       :(ends[i]    == INT64_MAX) ? matx::matxEnd
                        : static_cast<matx::index_t>(ends[i]);
                 st[i] = strides ? static_cast<matx::index_t>(strides[i]) : 1;
             }

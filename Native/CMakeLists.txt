@@ -53,7 +53,6 @@ if(NOT matx_FOUND)
     endif()
     add_library(matx INTERFACE)
     target_include_directories(matx INTERFACE "${MATX_ROOT}/include")
-    target_compile_definitions(matx INTERFACE MATX_MANAGED_MEMORY=0)
     message(STATUS "Using MatX from ${MATX_ROOT}/include (header-only)")
 endif()
 
