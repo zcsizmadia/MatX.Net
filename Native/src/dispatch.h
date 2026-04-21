@@ -40,14 +40,14 @@
 //
 template<typename Visitor>
 void visit_tensor(MatxTensorBase* tb, Visitor&& v) {
-#define DISPATCH_DTYPE(T, DENUM)                                           \
-    case DENUM:                                                             \
-        switch (tb->rank) {                                                 \
-            case 1: v(static_cast<MatxTypedTensor<T,1>*>(tb)->t); return;  \
-            case 2: v(static_cast<MatxTypedTensor<T,2>*>(tb)->t); return;  \
-            case 3: v(static_cast<MatxTypedTensor<T,3>*>(tb)->t); return;  \
-            case 4: v(static_cast<MatxTypedTensor<T,4>*>(tb)->t); return;  \
-            default: throw std::runtime_error("rank > 4 not supported");   \
+#define DISPATCH_DTYPE(T, DENUM)                                                             \
+    case DENUM:                                                                               \
+        switch (tb->rank) {                                                                   \
+            case 1: v.template operator()<T,1>(static_cast<MatxTypedTensor<T,1>*>(tb)->t); return; \
+            case 2: v.template operator()<T,2>(static_cast<MatxTypedTensor<T,2>*>(tb)->t); return; \
+            case 3: v.template operator()<T,3>(static_cast<MatxTypedTensor<T,3>*>(tb)->t); return; \
+            case 4: v.template operator()<T,4>(static_cast<MatxTypedTensor<T,4>*>(tb)->t); return; \
+            default: throw std::runtime_error("rank > 4 not supported");                     \
         }
     switch (tb->dtype) {
         MATX_FOREACH_DTYPE(DISPATCH_DTYPE)
@@ -59,14 +59,14 @@ void visit_tensor(MatxTensorBase* tb, Visitor&& v) {
 /// Variant that iterates only over float/complex dtypes.
 template<typename Visitor>
 void visit_float_tensor(MatxTensorBase* tb, Visitor&& v) {
-#define DISPATCH_DTYPE(T, DENUM)                                           \
-    case DENUM:                                                             \
-        switch (tb->rank) {                                                 \
-            case 1: v(static_cast<MatxTypedTensor<T,1>*>(tb)->t); return;  \
-            case 2: v(static_cast<MatxTypedTensor<T,2>*>(tb)->t); return;  \
-            case 3: v(static_cast<MatxTypedTensor<T,3>*>(tb)->t); return;  \
-            case 4: v(static_cast<MatxTypedTensor<T,4>*>(tb)->t); return;  \
-            default: throw std::runtime_error("rank > 4 not supported");   \
+#define DISPATCH_DTYPE(T, DENUM)                                                             \
+    case DENUM:                                                                               \
+        switch (tb->rank) {                                                                   \
+            case 1: v.template operator()<T,1>(static_cast<MatxTypedTensor<T,1>*>(tb)->t); return; \
+            case 2: v.template operator()<T,2>(static_cast<MatxTypedTensor<T,2>*>(tb)->t); return; \
+            case 3: v.template operator()<T,3>(static_cast<MatxTypedTensor<T,3>*>(tb)->t); return; \
+            case 4: v.template operator()<T,4>(static_cast<MatxTypedTensor<T,4>*>(tb)->t); return; \
+            default: throw std::runtime_error("rank > 4 not supported");                     \
         }
     switch (tb->dtype) {
         MATX_FOREACH_FLOAT_DTYPE(DISPATCH_DTYPE)
@@ -88,13 +88,13 @@ void visit_tensor2(MatxTensorBase* a, MatxTensorBase* b, Visitor&& v) {
 #define DISPATCH_DTYPE(T, DENUM)                                                                  \
     case DENUM:                                                                                   \
         switch (a->rank) {                                                                        \
-            case 1: v(static_cast<MatxTypedTensor<T,1>*>(a)->t,                                  \
+            case 1: v.template operator()<T,1>(static_cast<MatxTypedTensor<T,1>*>(a)->t,         \
                        static_cast<MatxTypedTensor<T,1>*>(b)->t); return;                        \
-            case 2: v(static_cast<MatxTypedTensor<T,2>*>(a)->t,                                  \
+            case 2: v.template operator()<T,2>(static_cast<MatxTypedTensor<T,2>*>(a)->t,         \
                        static_cast<MatxTypedTensor<T,2>*>(b)->t); return;                        \
-            case 3: v(static_cast<MatxTypedTensor<T,3>*>(a)->t,                                  \
+            case 3: v.template operator()<T,3>(static_cast<MatxTypedTensor<T,3>*>(a)->t,         \
                        static_cast<MatxTypedTensor<T,3>*>(b)->t); return;                        \
-            case 4: v(static_cast<MatxTypedTensor<T,4>*>(a)->t,                                  \
+            case 4: v.template operator()<T,4>(static_cast<MatxTypedTensor<T,4>*>(a)->t,         \
                        static_cast<MatxTypedTensor<T,4>*>(b)->t); return;                        \
             default: throw std::runtime_error("rank > 4 not supported");                          \
         }
@@ -118,16 +118,16 @@ void visit_tensor3(MatxTensorBase* dst, MatxTensorBase* a, MatxTensorBase* b, Vi
 #define DISPATCH_DTYPE(T, DENUM)                                                                  \
     case DENUM:                                                                                   \
         switch (dst->rank) {                                                                      \
-            case 1: v(static_cast<MatxTypedTensor<T,1>*>(dst)->t,                                \
+            case 1: v.template operator()<T,1>(static_cast<MatxTypedTensor<T,1>*>(dst)->t,       \
                        static_cast<MatxTypedTensor<T,1>*>(a)->t,                                 \
                        static_cast<MatxTypedTensor<T,1>*>(b)->t); return;                        \
-            case 2: v(static_cast<MatxTypedTensor<T,2>*>(dst)->t,                                \
+            case 2: v.template operator()<T,2>(static_cast<MatxTypedTensor<T,2>*>(dst)->t,       \
                        static_cast<MatxTypedTensor<T,2>*>(a)->t,                                 \
                        static_cast<MatxTypedTensor<T,2>*>(b)->t); return;                        \
-            case 3: v(static_cast<MatxTypedTensor<T,3>*>(dst)->t,                                \
+            case 3: v.template operator()<T,3>(static_cast<MatxTypedTensor<T,3>*>(dst)->t,       \
                        static_cast<MatxTypedTensor<T,3>*>(a)->t,                                 \
                        static_cast<MatxTypedTensor<T,3>*>(b)->t); return;                        \
-            case 4: v(static_cast<MatxTypedTensor<T,4>*>(dst)->t,                                \
+            case 4: v.template operator()<T,4>(static_cast<MatxTypedTensor<T,4>*>(dst)->t,       \
                        static_cast<MatxTypedTensor<T,4>*>(a)->t,                                 \
                        static_cast<MatxTypedTensor<T,4>*>(b)->t); return;                        \
             default: throw std::runtime_error("rank > 4 not supported");                          \

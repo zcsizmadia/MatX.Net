@@ -47,7 +47,7 @@ jobs:
         repository: NVIDIA/matx
         path: Native/MatX
 
-    - name: Build MatX
+    - name: Build MatX Native Library
       shell: bash
       run: |
         cd Native
