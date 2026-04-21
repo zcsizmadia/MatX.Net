@@ -35,8 +35,9 @@ jobs:
 
     - uses: jimver/cuda-toolkit@v0.2.35
       with:
-        method: 'local'
+        method: 'network'
         cuda: '12.6.2'
+        sub-packages: '["nvcc", "cuda-cccl"]'
     
     - name: Verify CUDA Installation
       run: nvcc --version # Verify installation

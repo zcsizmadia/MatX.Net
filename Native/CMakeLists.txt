@@ -1,5 +1,17 @@
 cmake_minimum_required(VERSION 3.25)
 
+# ── CUDA architectures (must precede project() for CMP0104) ──────────────────
+# project(LANGUAGES CUDA) writes CMAKE_CUDA_ARCHITECTURES into the cache during
+# compiler detection; a subsequent set(...CACHE STRING) without FORCE is silently
+# ignored, leaving "native"/empty on headless CI runners (→ nvcc defaults to
+# sm_52 which is < 6.0 and fails MatX's compile-time check).
+# Override via:  cmake -DMATX_CUDA_ARCH="80;86;89;90"
+if(DEFINED MATX_CUDA_ARCH)
+    set(CMAKE_CUDA_ARCHITECTURES ${MATX_CUDA_ARCH})
+elseif(NOT DEFINED CMAKE_CUDA_ARCHITECTURES)
+    set(CMAKE_CUDA_ARCHITECTURES "70;75;80;86;89;90")
+endif()
+
 project(MatxNative
     VERSION 1.0.0
     LANGUAGES CXX CUDA
@@ -11,17 +23,17 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CUDA_STANDARD 20)
 set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 
-# ── CUDA architectures ────────────────────────────────────────────────────────
-# Set MATX_CUDA_ARCH on the command line to override, e.g.:
-#   cmake -DMATX_CUDA_ARCH="80;86;89;90" ..
-if(NOT DEFINED MATX_CUDA_ARCH)
-    # Auto-detect from the host GPU; fall back to a broad set.
-    include(FindCUDA OPTIONAL)
-    set(CMAKE_CUDA_ARCHITECTURES "70;75;80;86;89;90" CACHE STRING
-        "CUDA GPU architectures to compile for")
-else()
-    set(CMAKE_CUDA_ARCHITECTURES ${MATX_CUDA_ARCH})
-endif()
+## ── CUDA architectures ────────────────────────────────────────────────────────
+## Set MATX_CUDA_ARCH on the command line to override, e.g.:
+##   cmake -DMATX_CUDA_ARCH="80;86;89;90" ..
+#if(NOT DEFINED MATX_CUDA_ARCH)
+#    # Auto-detect from the host GPU; fall back to a broad set.
+#    include(FindCUDA OPTIONAL)
+#    set(CMAKE_CUDA_ARCHITECTURES "70;75;80;86;89;90" CACHE STRING
+#        "CUDA GPU architectures to compile for")
+#else()
+#    set(CMAKE_CUDA_ARCHITECTURES ${MATX_CUDA_ARCH})
+#endif()
 
 # ── Platform detection ────────────────────────────────────────────────────────
 if(WIN32)
