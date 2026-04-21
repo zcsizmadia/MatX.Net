@@ -39,7 +39,7 @@ jobs:
       with:
         method: 'network'
         cuda: '12.6.2'
-        sub-packages: '["nvcc", "cccl"]'
+        sub-packages: '["toolkit", "nvcc", "cccl"]'
     
     - name: Verify CUDA Installation
       run: nvcc --version # Verify installation
