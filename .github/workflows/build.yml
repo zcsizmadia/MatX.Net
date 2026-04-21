@@ -20,7 +20,8 @@ jobs:
           10.0.x
 
     - uses: jimver/cuda-toolkit@v0.2.35
-      #with:
+      with:
+        method: 'network'
       #  cuda: '12.1.0' # Specify the desired version
     
     - name: Verify CUDA Installation
@@ -40,6 +41,7 @@ jobs:
         cd build
         cmake .. -DCMAKE_BUILD_TYPE=Release
         cmake --build . --config Release
+        find .
 
     - name: Build
       shell: bash
