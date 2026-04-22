@@ -48,8 +48,9 @@ jobs:
     - name: Copy NVTX Headers
       shell: bash
       run: |
-        sudo cp -R Native/MatX/nvtx/include/ /usr/local/cuda/targets/x86_64-linux
-        find /usr/local/cuda/targets/x86_64-linux/include
+        sudo cp -R Native/MatX/nvtx/include/ /usr/local
+        #find /usr/local/cuda/targets/x86_64-linux/include
+        find /usr/local/include
       
     - uses: jimver/cuda-toolkit@v0.2.35
       with:
