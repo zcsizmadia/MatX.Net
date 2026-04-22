@@ -12,7 +12,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix: &platform-matrix
-        runtimeId: [win-x64, linux-x64, linux-arm64]
+        #runtimeId: [win-x64, linux-x64, linux-arm64]
+        runtimeId: [linux-x64]
         include:
           - runtimeId: win-x64
             os: windows-latest
@@ -40,12 +41,14 @@ jobs:
         method: 'network'
         #cuda: '12.6.2'
         cuda: '13.0.1'
-        sub-packages: '["toolkit", "nvcc", "cccl"]'
-        # sub-packages: '["nvcc", "cccl"]'
-        # non-cuda-sub-packages: '["libcublas"]'
+        #sub-packages: '["toolkit", "nvcc", "cccl"]'
+        sub-packages: '["nvcc", "cccl"]'
+        non-cuda-sub-packages: '["libcublas"]'
     
     - name: Verify CUDA Installation
-      run: nvcc --version # Verify installation
+      run: |
+        find /usr | grep number
+        nvcc --version # Verify installation
 
     - name: Checkout MatX
       uses: actions/checkout@v6
