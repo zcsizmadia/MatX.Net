@@ -36,6 +36,21 @@ jobs:
         dotnet-version: |
           10.0.x
 
+    - name: Checkout NVTX Headers
+      uses: actions/checkout@v4
+      with:
+        repository: NVIDIA/NVTX
+        ref: release-v3-c-cpp  # Recommended lightweight branch for C/C++
+        path: Native/MatX/nvtx
+        sparse-checkout: |
+          include
+
+    - name: Copy NVTX Headers
+      shell: bash
+      run: |
+        sudo cp -R Native/MatX/nvtx/include/ /usr/local/cuda/targets/x86_64-linux
+        find /usr/local/cuda/targets/x86_64-linux/include
+      
     - uses: jimver/cuda-toolkit@v0.2.35
       with:
         method: 'network'
@@ -45,11 +60,6 @@ jobs:
         sub-packages: '["nvcc", "cccl"]'
         non-cuda-sub-packages: '["libcublas-dev", "libcufft-dev", "libcurand-dev", "libcusolver-dev", "libcusparse-dev"]'
     
-    - name: Verify CUDA Installation
-      run: |
-        #find /usr | grep cuda | grep number
-        nvcc --version # Verify installation
-
     - name: Checkout MatX
       uses: actions/checkout@v6
       with:
