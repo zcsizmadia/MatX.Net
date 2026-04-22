@@ -15,16 +15,16 @@ jobs:
         #runtimeId: [win-x64, linux-x64, linux-arm64]
         runtimeId: [linux-x64]
         include:
-          - runtimeId: win-x64
-            os: windows-latest
+        #   - runtimeId: win-x64
+        #     os: windows-latest
 
           - runtimeId: linux-x64
             os: ubuntu-latest
             #os: ubuntu-22.04
 
-          - runtimeId: linux-arm64
-            #os: ubuntu-24.04-arm
-            os: ubuntu-22.04-arm
+        #   - runtimeId: linux-arm64
+        #     #os: ubuntu-24.04-arm
+        #     os: ubuntu-22.04-arm
 
     runs-on: ${{ matrix.os }}
     steps:
