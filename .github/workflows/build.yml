@@ -43,11 +43,11 @@ jobs:
         cuda: '13.0.1'
         #sub-packages: '["toolkit", "nvcc", "cccl"]'
         sub-packages: '["nvcc", "cccl"]'
-        non-cuda-sub-packages: '["libcublas"]'
+        non-cuda-sub-packages: '["cublas-dev"]'
     
     - name: Verify CUDA Installation
       run: |
-        find /usr | grep number
+        find /usr | grep cuda | grep number
         nvcc --version # Verify installation
 
     - name: Checkout MatX
