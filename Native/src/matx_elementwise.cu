@@ -1,5 +1,31 @@
 // matx_elementwise.cu  –  Element-wise unary and binary operations.
 #include "dispatch.h"
+#include <cuda/std/cmath>
+
+// ── Back-fill MatX operators removed from upstream ───────────────────────────
+// erf, erfc, and sign were removed from matx namespace; define them locally
+// using the same MATX_UNARY_OP_GEN_NOFUNC / MATX_DEFINE_UNARY_OP pattern.
+namespace matx { namespace detail {
+
+template <typename T>
+static __MATX_INLINE__ __MATX_HOST__ __MATX_DEVICE__ auto scalar_internal_erf(T v1) {
+    if constexpr (cuda::std::is_floating_point_v<T>) { return cuda::std::erf(v1); }
+    else { return v1; }
+}
+template <typename T>
+static __MATX_INLINE__ __MATX_HOST__ __MATX_DEVICE__ auto scalar_internal_erfc(T v1) {
+    if constexpr (cuda::std::is_floating_point_v<T>) { return cuda::std::erfc(v1); }
+    else { return v1; }
+}
+MATX_UNARY_OP_GEN_NOFUNC(erf,  Erf)
+MATX_UNARY_OP_GEN_NOFUNC(erfc, Erfc)
+
+} } // namespace matx::detail
+
+namespace matx {
+    MATX_DEFINE_UNARY_OP(erf,  detail::ErfOp)
+    MATX_DEFINE_UNARY_OP(erfc, detail::ErfcOp)
+} // namespace matx
 
 // ── Unary helper macro ────────────────────────────────────────────────────────
 //
@@ -138,7 +164,7 @@ extern "C" int matx_hermitian(MatxExecutorHandle exec,
                                    matx::tensor_t<T,R>& st) {
                 if constexpr (R == 2) {
                     to_exec(exec)->run([&](auto& ex) {
-                        (dt = matx::hermitian(st)).run(ex);
+                        (dt = matx::hermitianT(st)).run(ex);
                     });
                 } else {
                     throw std::runtime_error("hermitian requires rank-2 tensors");
@@ -217,7 +243,7 @@ extern "C" int matx_norm(MatxExecutorHandle exec,
         visit_float_tensor(to_base(src), [&]<typename T, int R>(matx::tensor_t<T,R>& st) {
             visit_float_tensor(to_base(dst), [&]<typename DT, int DR>(matx::tensor_t<DT,DR>& dt) {
                 to_exec(exec)->run([&](auto& ex) {
-                    (dt = matx::norm(st)).run(ex);
+                    (dt = matx::vector_norm(st)).run(ex);
                 });
             });
         });

@@ -188,7 +188,7 @@ extern "C" int matx_fftshift(MatxExecutorHandle exec,
         visit_tensor2(to_base(dst), to_base(src),
             [&]<typename T, int R>(matx::tensor_t<T,R>& dt, matx::tensor_t<T,R>& st) {
                 to_exec(exec)->run([&](auto& ex) {
-                    (dt = matx::fftshift(st)).run(ex);
+                    (dt = matx::fftshift1D(st)).run(ex);
                 });
             });
         return MATX_OK;
@@ -201,7 +201,7 @@ extern "C" int matx_ifftshift(MatxExecutorHandle exec,
         visit_tensor2(to_base(dst), to_base(src),
             [&]<typename T, int R>(matx::tensor_t<T,R>& dt, matx::tensor_t<T,R>& st) {
                 to_exec(exec)->run([&](auto& ex) {
-                    (dt = matx::ifftshift(st)).run(ex);
+                    (dt = matx::ifftshift1D(st)).run(ex);
                 });
             });
         return MATX_OK;

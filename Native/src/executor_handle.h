@@ -10,7 +10,7 @@ struct ExecutorHandle {
     enum class Kind { CUDA, HOST } kind;
 
     matx::cudaExecutor  cuda_exec{};
-    matx::hostExecutor  host_exec{};
+    matx::SingleThreadedHostExecutor  host_exec{};
 
     explicit ExecutorHandle(cudaStream_t stream)
         : kind(Kind::CUDA), cuda_exec(stream) {}

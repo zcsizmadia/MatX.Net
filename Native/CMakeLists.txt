@@ -1,5 +1,17 @@
 cmake_minimum_required(VERSION 3.25)
 
+# ── CUDA architectures (must precede project() for CMP0104) ──────────────────
+# project(LANGUAGES CUDA) writes CMAKE_CUDA_ARCHITECTURES into the cache during
+# compiler detection; a subsequent set(...CACHE STRING) without FORCE is silently
+# ignored, leaving "native"/empty on headless CI runners (→ nvcc defaults to
+# sm_52 which is < 6.0 and fails MatX's compile-time check).
+# Override via:  cmake -DMATX_CUDA_ARCH="80;86;89;90"
+if(DEFINED MATX_CUDA_ARCH)
+    set(CMAKE_CUDA_ARCHITECTURES ${MATX_CUDA_ARCH})
+elseif(NOT DEFINED CMAKE_CUDA_ARCHITECTURES)
+    set(CMAKE_CUDA_ARCHITECTURES "75;80;86;89;90")
+endif()
+
 project(MatxNative
     VERSION 1.0.0
     LANGUAGES CXX CUDA
@@ -11,17 +23,17 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CUDA_STANDARD 20)
 set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 
-# ── CUDA architectures ────────────────────────────────────────────────────────
-# Set MATX_CUDA_ARCH on the command line to override, e.g.:
-#   cmake -DMATX_CUDA_ARCH="80;86;89;90" ..
-if(NOT DEFINED MATX_CUDA_ARCH)
-    # Auto-detect from the host GPU; fall back to a broad set.
-    include(FindCUDA OPTIONAL)
-    set(CMAKE_CUDA_ARCHITECTURES "70;75;80;86;89;90" CACHE STRING
-        "CUDA GPU architectures to compile for")
-else()
-    set(CMAKE_CUDA_ARCHITECTURES ${MATX_CUDA_ARCH})
-endif()
+## ── CUDA architectures ────────────────────────────────────────────────────────
+## Set MATX_CUDA_ARCH on the command line to override, e.g.:
+##   cmake -DMATX_CUDA_ARCH="80;86;89;90" ..
+#if(NOT DEFINED MATX_CUDA_ARCH)
+#    # Auto-detect from the host GPU; fall back to a broad set.
+#    include(FindCUDA OPTIONAL)
+#    set(CMAKE_CUDA_ARCHITECTURES "70;75;80;86;89;90" CACHE STRING
+#        "CUDA GPU architectures to compile for")
+#else()
+#    set(CMAKE_CUDA_ARCHITECTURES ${MATX_CUDA_ARCH})
+#endif()
 
 # ── Platform detection ────────────────────────────────────────────────────────
 if(WIN32)
@@ -40,7 +52,7 @@ find_package(CUDAToolkit REQUIRED)
 # Assume the CMakeLists.txt of the parent MatX repo is one directory up.
 # Adjust MATX_ROOT if building standalone.
 if(NOT DEFINED MATX_ROOT)
-    get_filename_component(MATX_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/matx" ABSOLUTE)
+    get_filename_component(MATX_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/MatX" ABSOLUTE)
 endif()
 
 # If matx was installed via find_package:
@@ -53,7 +65,6 @@ if(NOT matx_FOUND)
     endif()
     add_library(matx INTERFACE)
     target_include_directories(matx INTERFACE "${MATX_ROOT}/include")
-    target_compile_definitions(matx INTERFACE MATX_MANAGED_MEMORY=0)
     message(STATUS "Using MatX from ${MATX_ROOT}/include (header-only)")
 endif()
 

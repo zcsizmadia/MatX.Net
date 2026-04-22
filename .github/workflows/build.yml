@@ -8,8 +8,25 @@ on:
 
 jobs:
   build:
-    name: Build
-    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix: &platform-matrix
+        #runtimeId: [win-x64, linux-x64, linux-arm64]
+        runtimeId: [linux-x64]
+        include:
+        #   - runtimeId: win-x64
+        #     os: windows-latest
+
+          - runtimeId: linux-x64
+            os: ubuntu-latest
+            #os: ubuntu-22.04
+
+        #   - runtimeId: linux-arm64
+        #     #os: ubuntu-24.04-arm
+        #     os: ubuntu-22.04-arm
+
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v6
 
@@ -19,16 +36,45 @@ jobs:
         dotnet-version: |
           10.0.x
 
-    - uses: jimver/cuda-toolkit@v0.2.21
+    - name: Checkout NVTX Headers
+      uses: actions/checkout@v4
       with:
-        cuda: '12.1.0' # Specify the desired version
-    
-    - name: Verify CUDA Installation
-      run: nvcc --version # Verify installation
+        repository: NVIDIA/NVTX
+        ref: release-v3-c-cpp  # Recommended lightweight branch for C/C++
+        path: Native/MatX/nvtx
+        sparse-checkout: |
+          include
 
-    - name: Build native library
+    - name: Copy NVTX Headers
       shell: bash
-      run: true
+      run: |
+        sudo cp -R Native/MatX/nvtx/include/ /usr/local
+        #find /usr/local/cuda/targets/x86_64-linux/include
+        find /usr/local/include
+      
+    - uses: jimver/cuda-toolkit@v0.2.35
+      with:
+        method: 'network'
+        #cuda: '12.6.2'
+        cuda: '13.0.1'
+        #sub-packages: '["toolkit", "nvcc", "cccl"]'
+        sub-packages: '["nvcc", "cccl"]'
+        non-cuda-sub-packages: '["libcublas-dev", "libcufft-dev", "libcurand-dev", "libcusolver-dev", "libcusparse-dev"]'
+    
+    - name: Checkout MatX
+      uses: actions/checkout@v6
+      with:
+        repository: NVIDIA/matx
+        path: Native/MatX
+
+    - name: Build MatX Native Library
+      shell: bash
+      run: |
+        cd Native
+        mkdir build
+        cmake -B build -DCMAKE_BUILD_TYPE=Release
+        cmake --build build --config Release -j$(nproc)
+        find build/
 
     - name: Build
       shell: bash
