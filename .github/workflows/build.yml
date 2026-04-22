@@ -47,7 +47,7 @@ jobs:
     
     - name: Verify CUDA Installation
       run: |
-        find /usr | grep cuda | grep number
+        #find /usr | grep cuda | grep number
         nvcc --version # Verify installation
 
     - name: Checkout MatX
