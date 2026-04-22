@@ -82,7 +82,7 @@ struct MatxTypedTensor final : MatxTensorBase {
     MatxTypedTensor(void* ptr, const int64_t* shape) {
         dtype = dtype_of<T>();
         rank  = RANK;
-        std::array<matx::index_t, RANK> dims;
+        matx::index_t dims[RANK];
         for (int i = 0; i < RANK; ++i) dims[i] = static_cast<matx::index_t>(shape[i]);
         t = matx::make_tensor<T>(static_cast<T*>(ptr), dims, /*owning=*/false);
     }
