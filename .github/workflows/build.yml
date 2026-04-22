@@ -43,7 +43,7 @@ jobs:
         cuda: '13.0.1'
         #sub-packages: '["toolkit", "nvcc", "cccl"]'
         sub-packages: '["nvcc", "cccl"]'
-        non-cuda-sub-packages: '["cublas-dev"]'
+        non-cuda-sub-packages: '["libcublas-dev"]'
     
     - name: Verify CUDA Installation
       run: |
